@@ -1,26 +1,48 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useEffect, useState} from 'react';
 import './App.css';
+import {BrowserRouter as Router, Switch, Route, Link as RouterLink, Redirect} from "react-router-dom";
+import {createStore, State, useStoreActions, useStoreState} from "easy-peasy";
+import {AuthRoute, PrivateRoute} from "./Shared/PrivateRoute";
+import {AuthPage} from "./Pages/AuthPage";
+import {HomePage} from "./Pages/HomePage";
+import {HeaderComponent} from "./Components/HeaderComponent";
+import {ProfilePage} from "./Pages/ProfilePage";
+import {AuthService} from "./Services/AuthService";
+
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const userStore = useStoreState((state: any) => state.user)
+    const globalLock = useStoreState((state: any) => state.globalLock)
+    const verifyUserStatus = useStoreActions((actions: any) => actions.verifyUserStatus)
+    const setGlobalLock = useStoreActions((actions: any) => actions.setGlobalLock)
+
+    useEffect(() => {
+        setGlobalLock(true)
+        if (userStore.token) {
+            verifyUserStatus(userStore.token)
+        }
+        else setGlobalLock(false)
+    }, [])
+
+
+    const app = () => {
+        return (
+            <Router>
+                <HeaderComponent/>
+                <Switch>
+                    <PrivateRoute path='/home' isLoggedIn={userStore.isLoggedIn} component={HomePage}/>
+                    <AuthRoute path='/login' component={AuthPage} isLoggedIn={userStore.isLoggedIn}
+                               props={{pageType: 'login'}}/>
+                    <AuthRoute path='/register' component={AuthPage} isLoggedIn={userStore.isLoggedIn}
+                               props={{pageType: 'register'}}/>
+                    <PrivateRoute path='/profile' component={ProfilePage} isLoggedIn={userStore.isLoggedIn}/>
+                    <Redirect to='/home' />
+                </Switch>
+            </Router>
+        )
+    }
+
+    return (!globalLock ? app() : null);
 }
 
 export default App;
