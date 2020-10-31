@@ -33,7 +33,7 @@ export class AuthService {
 
             if (profile.code === 200) {
                 console.log(profile)
-                actions.setUserProfile(profile.data, true)
+                actions.setUserProfile(profile, true)
             }
             actions.setGlobalLock(false)
 

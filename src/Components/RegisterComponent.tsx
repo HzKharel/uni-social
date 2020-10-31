@@ -78,7 +78,9 @@ export const RegisterComponent = ({props}: {props: any}) => {
                     )}
                     <Button className={classes.loginButton}
                             variant="contained"
-                            onClick={props.submit}
+                            onClick={() => {
+                                props.submit(false)
+                            }}
                             disabled={props.otherState.loginDisabled}
                             color="primary">
                         Register

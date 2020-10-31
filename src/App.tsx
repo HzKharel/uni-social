@@ -29,15 +29,18 @@ function App() {
         return (
             <Router>
                 <HeaderComponent/>
-                <Switch>
-                    <PrivateRoute path='/home' isLoggedIn={userStore.isLoggedIn} component={HomePage}/>
-                    <AuthRoute path='/login' component={AuthPage} isLoggedIn={userStore.isLoggedIn}
-                               props={{pageType: 'login'}}/>
-                    <AuthRoute path='/register' component={AuthPage} isLoggedIn={userStore.isLoggedIn}
-                               props={{pageType: 'register'}}/>
-                    <PrivateRoute path='/profile' component={ProfilePage} isLoggedIn={userStore.isLoggedIn}/>
-                    <Redirect to='/home' />
-                </Switch>
+                <div className='App'>
+                    <Switch>
+                        <PrivateRoute path='/home' isLoggedIn={userStore.isLoggedIn} component={HomePage}/>
+                        <AuthRoute path='/login' component={AuthPage} isLoggedIn={userStore.isLoggedIn}
+                                   props={{pageType: 'login'}}/>
+                        <AuthRoute path='/register' component={AuthPage} isLoggedIn={userStore.isLoggedIn}
+                                   props={{pageType: 'register'}}/>
+                        <PrivateRoute path='/profile' component={ProfilePage} isLoggedIn={userStore.isLoggedIn}/>
+                        <Redirect to='/home' />
+                    </Switch>
+                </div>
+
             </Router>
         )
     }

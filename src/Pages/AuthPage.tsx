@@ -11,7 +11,7 @@ export const AuthPage = ({pageType}: { pageType: string }) => {
     const authService = AuthService.getInstance()
     const setUserData = useStoreActions((actions: any) => actions.setUserProfile)
 
-    const [credentials, setCredentials] = useState<any>({email: 'hari@gmail.com', password: 'hello World'})
+    const [credentials, setCredentials] = useState<any>({email: 'hari@gmail.com', password: 'helloWorld1$'})
     const [profileData, setProfileData] = useState<any>({display_name: '', name: '', education: '', work: ''})
     const [otherState, setOtherState] = useState<any>({
         errors: {},
@@ -37,27 +37,26 @@ export const AuthPage = ({pageType}: { pageType: string }) => {
             errors.pwdLen = "Passwords must be longer than 8 characters, include a Symbol, a Number, an Upper and a Lower case character."
             disabled = true
         } else delete errors['pwdLen']
+        console.log(credentials.password !== otherState.confirmPassword )
         if (credentials.password !== otherState.confirmPassword && pageType === 'register') {
             disabled = true
             errors.pwdMatch = "Passwords don't match."
-        } else delete errors.pwdMatch
+        } else delete errors['pwdMatch']
 
         if (pageType === 'register') {
 
             for (let key in profileData) {
-                if (profileData[key].length < 1) {
-                    console.log(key)
-                    console.log(profileData[key])
+                if (profileData.hasOwnProperty(key) && profileData[key].length < 1) {
                     disabled = true
                 }
             }
         }
-
         setOtherState({...otherState, loginDisabled: disabled, errors: errors})
-    }, [credentials, profileData])
+    }, [credentials, profileData, otherState.confirmPassword])
 
     const handleChange = (event: any, isCred: any) => {
         if (event.target.id === 'confirmPassword') {
+            console.log('got here')
             setOtherState({...otherState, confirmPassword: event.target.value})
         } else if (isCred) {
             setCredentials({...credentials, [event.target.id]: event.target.value})
@@ -82,6 +81,10 @@ export const AuthPage = ({pageType}: { pageType: string }) => {
         }
         else {
             authService.registerUser({reg_data: credentials, profile_data: profileData})
+                .subscribe((res: any) => {
+                    if (res.code === 200) setUserData(res, remember)
+
+                })
         }
 
     }

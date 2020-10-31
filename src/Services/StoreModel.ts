@@ -10,7 +10,8 @@ export const store = createStore({
     },
     globalLock: true,
     setUserProfile: action((state: any, payload: any, rememberMe?: boolean) => {
-        state.user.profile = payload;
+        console.log(payload)
+        state.user.profile = payload.data;
         state.user.isLoggedIn = true
 
         if (payload.token) {
